@@ -118,8 +118,8 @@ def cmd_history(args):
     print(f"\n{'Time (UTC)':<22} {'Name':<25} {'Status':<6} {'Latency':<10} {'HTTP'}")
     print("-" * 80)
     for r in rows:
-        lat  = f"{r['latency']}ms" if r["latency"] else "—"
-        code = str(r["http_code"]) if r["http_code"] else "—"
+        lat  = f"{r['latency']}ms" if r["latency"] else "-"
+        code = str(r["http_code"]) if r["http_code"] else "-"
         print(f"{r['checked']:<22} {r['name']:<25} {r['status']:<6} {lat:<10} {code}")
     print()
 
