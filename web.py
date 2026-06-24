@@ -95,6 +95,8 @@ TEMPLATE = """<!DOCTYPE html>
     .dot.down { background:#f85149; }
     footer { text-align:center; padding:16px; font-size:0.75rem; color:#484f58; }
     .refresh-note { font-size:0.72rem; color:#484f58; margin-left:8px; }
+    .alpha-banner { background:#1a1200; border-bottom:1px solid #4a3500; padding:6px 32px; font-size:0.75rem; color:#d29922; display:flex; align-items:center; gap:8px; }
+    .alpha-badge  { background:#4a3500; color:#d29922; font-size:0.65rem; font-weight:700; padding:1px 7px; border-radius:4px; letter-spacing:.5px; }
   </style>
 </head>
 <body>
@@ -114,6 +116,11 @@ TEMPLATE = """<!DOCTYPE html>
     <span class="refresh-note">page auto-refresh 30s</span>
   </div>
 </header>
+
+<div class="alpha-banner">
+  <span class="alpha-badge">ALPHA</span>
+  Versión en desarrollo — pueden existir errores. Reporta cualquier problema en <a href="https://github.com/Cid736/net-monitor/issues" target="_blank" style="color:#d29922;">github.com/Cid736/net-monitor</a>
+</div>
 
 <div class="summary" style="margin-top:16px;">
   <div><b>{{ total }}</b> targets</div>
