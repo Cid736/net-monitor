@@ -106,6 +106,7 @@ All results are stored in `monitor.db` (SQLite). Alerts only fire on **status ch
 ## Changelog
 
 **v0.1.1** — 2026-06-24
+- Fix: check errors are now logged instead of silently discarded
 - Fix: replace em-dash in CLI list output that caused encoding crash on Windows (CP1252)
 
 **v0.1.0** — 2026-06-23

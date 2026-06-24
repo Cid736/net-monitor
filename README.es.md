@@ -106,6 +106,7 @@ Todos los resultados se almacenan en `monitor.db` (SQLite). Las alertas solo se 
 ## Historial de versiones
 
 **v0.1.1** — 2026-06-24
+- Fix: los errores de comprobación ahora se registran en lugar de descartarse silenciosamente
 - Fix: reemplazado guion largo en la salida CLI que causaba error de encoding en Windows (CP1252)
 
 **v0.1.0** — 2026-06-23
