@@ -94,7 +94,7 @@ def cmd_list(_args):
     print("-" * 100)
     for t in targets:
         pct = uptime_pct(t["id"])
-        up  = f"{pct}%" if pct is not None else "—"
+        up  = f"{pct}%" if pct is not None else "-"
         print(f"{t['id']:<4} {t['name']:<25} {t['type']:<6} {_target_detail(t):<40} {t['status']:<8} {up}")
     print()
 
