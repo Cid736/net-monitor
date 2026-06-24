@@ -1,0 +1,9 @@
+services:
+  net-monitor:
+    build: .
+    volumes:
+      - ./monitor.db:/app/monitor.db   # persist history between runs
+    env_file:
+      - .env                           # optional: TELEGRAM_TOKEN + TELEGRAM_CHAT_ID
+    entrypoint: ["python", "main.py"]
+    command: ["run", "--interval", "1"]  # check every 1 min
