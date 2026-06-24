@@ -3,7 +3,7 @@
 Monitor de disponibilidad de red — comprueba hosts (ping ICMP), puertos TCP y endpoints HTTP/HTTPS. Guarda historial de uptime en SQLite y envía alertas por Telegram cuando un objetivo cae o vuelve a estar disponible.
 
 ## Stack
-Python · socket · requests · SQLite · Telegram Bot API
+Python · Flask · socket · requests · SQLite · Telegram Bot API
 
 ## Demo
 
@@ -32,6 +32,23 @@ Cuando el estado cambia, se envía un mensaje de Telegram:
 🔴 DOWN — App web
 Type: http
 Target: https://myapp.example.com
+```
+
+## Dashboard web
+
+```bash
+python web.py
+# Abre http://localhost:8080
+```
+
+Dashboard oscuro con tarjetas de estado (UP/DOWN), uptime %, latencia e historial de comprobaciones recientes. Se refresca automáticamente cada 30 segundos. El checker corre en background cada 60s.
+
+## CLI
+
+```bash
+python main.py check    # comprobación puntual
+python main.py list     # tabla de estado y uptime
+python main.py run      # modo demonio
 ```
 
 ## Instalación

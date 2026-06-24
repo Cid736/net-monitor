@@ -3,7 +3,7 @@
 Network availability monitor — checks hosts (ICMP ping), TCP ports and HTTP/HTTPS endpoints. Logs uptime history in SQLite and sends Telegram alerts when a target goes down or comes back up.
 
 ## Stack
-Python · socket · requests · SQLite · Telegram Bot API
+Python · Flask · socket · requests · SQLite · Telegram Bot API
 
 ## Demo
 
@@ -32,6 +32,23 @@ When status changes, a Telegram message is sent:
 🔴 DOWN — Web app
 Type: http
 Target: https://myapp.example.com
+```
+
+## Web dashboard
+
+```bash
+python web.py
+# Open http://localhost:8080
+```
+
+Dark dashboard with status cards (UP/DOWN), uptime %, latency and recent check history. Auto-refreshes every 30 seconds. Background checker runs every 60s.
+
+## CLI
+
+```bash
+python main.py check    # one-shot check
+python main.py list     # status + uptime table
+python main.py run      # daemon mode
 ```
 
 ## Setup
