@@ -102,3 +102,12 @@ python main.py remove 3
 | `http` | HTTP GET via `requests` | Web app / API availability (HTTP 5xx = down) |
 
 All results are stored in `monitor.db` (SQLite). Alerts only fire on **status change** — no spam if something stays down.
+
+## Changelog
+
+**v0.1.1** — 2026-06-24
+- Fix: replace em-dash in CLI list output that caused encoding crash on Windows (CP1252)
+
+**v0.1.0** — 2026-06-23
+- Initial release: ping, port and HTTP checks, SQLite history, Telegram alerts
+- Web dashboard with Start/Stop/Restart controls and alpha banner

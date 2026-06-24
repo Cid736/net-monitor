@@ -102,3 +102,12 @@ python main.py remove 3
 | `http` | HTTP GET via `requests` | Disponibilidad de app web / API (HTTP 5xx = caído) |
 
 Todos los resultados se almacenan en `monitor.db` (SQLite). Las alertas solo se disparan en **cambio de estado** — sin spam si algo sigue caído.
+
+## Historial de versiones
+
+**v0.1.1** — 2026-06-24
+- Fix: reemplazado guion largo en la salida CLI que causaba error de encoding en Windows (CP1252)
+
+**v0.1.0** — 2026-06-23
+- Publicación inicial: comprobaciones ping, puerto y HTTP, historial SQLite, alertas Telegram
+- Dashboard web con controles Iniciar/Parar/Reiniciar y banner alfa
