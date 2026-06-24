@@ -1,3 +1,11 @@
+<p align="center">
+  <a href="#english">🇬🇧 English</a> &nbsp;·&nbsp; <a href="#español">🇪🇸 Español</a>
+</p>
+
+---
+
+<a name="english"></a>
+
 # net-monitor
 
 Network availability monitor — checks hosts (ICMP ping), TCP ports and HTTP/HTTPS endpoints. Logs uptime history in SQLite and sends Telegram alerts when a target goes down or comes back up.
@@ -111,4 +119,65 @@ All results are stored in `monitor.db` (SQLite). Alerts only fire on **status ch
 
 **v0.1.0** — 2026-06-23
 - Initial release: ping, port and HTTP checks, SQLite history, Telegram alerts
-- Web dashboard with Start/Stop/Restart controls and alpha banner
+
+---
+
+<a name="español"></a>
+
+# net-monitor
+
+Monitor de disponibilidad de red — comprueba hosts (ping ICMP), puertos TCP y endpoints HTTP/HTTPS. Registra el historial de uptime en SQLite y envía alertas por Telegram cuando un objetivo cae o se recupera.
+
+## Stack
+Python · Flask · socket · requests · SQLite · Telegram Bot API
+
+## Instalación
+
+```bash
+git clone https://github.com/Cid736/net-monitor.git
+cd net-monitor
+pip install -r requirements.txt
+cp .env.example .env
+# Añade tu token de Telegram y chat ID (opcional — sin ellos las alertas no se envían)
+```
+
+## Uso
+
+```bash
+# Añadir objetivos
+python main.py add --name "Router"        --type ping --host 192.168.1.1
+python main.py add --name "Servidor SSH"  --type port --host 192.168.1.10 --port 22
+python main.py add --name "Web app"       --type http --url https://myapp.example.com
+
+# Comprobación puntual
+python main.py check
+
+# Listar todos los objetivos con estado y uptime %
+python main.py list
+
+# Historial de comprobaciones
+python main.py history
+
+# Modo demonio — comprueba cada 5 minutos, alerta en cambio de estado
+python main.py run --interval 5
+```
+
+## Cómo funciona
+
+| Tipo | Método | Qué detecta |
+|---|---|---|
+| `ping` | ICMP via subproceso `ping` | Accesibilidad del host |
+| `port` | TCP `socket.create_connection` | Disponibilidad del servicio en un puerto |
+| `http` | HTTP GET via `requests` | Disponibilidad de la app/API (HTTP 5xx = caído) |
+
+Los resultados se almacenan en `monitor.db` (SQLite). Las alertas solo se disparan en **cambio de estado** — sin spam si algo sigue caído.
+
+## Configuración de Telegram
+
+1. Crea un bot con [@BotFather](https://t.me/BotFather) — obtén `TELEGRAM_TOKEN`
+2. Escríbele al bot y visita `https://api.telegram.org/bot<TOKEN>/getUpdates` para obtener `TELEGRAM_CHAT_ID`
+3. Añade ambos al `.env`
+
+## Licencia
+
+MIT
