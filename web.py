@@ -28,8 +28,8 @@ def run_checks():
                 else:
                     ok, ms, code = http(t["url"])
                 record(t["id"], "up" if ok else "down", ms, code)
-            except Exception:
-                pass
+            except Exception as e:
+                print(f'[net-monitor] check error ({t.get("name", "?")}): {e}')
         _stop_event.wait(CHECK_INTERVAL)
 
 
