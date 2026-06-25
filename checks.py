@@ -24,17 +24,35 @@ def _valid_host(host: str) -> bool:
     return bool(_HOSTNAME_RE.match(host)) and len(host) <= 253
 
 
+def _is_private_ip(ip_str: str) -> bool:
+    try:
+        addr = ipaddress.ip_address(ip_str)
+        return addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_reserved
+    except ValueError:
+        return False
+
+
 def _safe_url(url: str) -> bool:
     try:
         parsed = urlparse(url)
         if parsed.scheme not in ('http', 'https') or not parsed.hostname:
             return False
+        host = parsed.hostname
+        # Direct IP — block if private
         try:
-            addr = ipaddress.ip_address(parsed.hostname)
-            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_reserved:
+            if _is_private_ip(host):
                 return False
+            return True  # public IP literal
         except ValueError:
-            pass  # hostname string — allow
+            pass
+        # Hostname — resolve and check every returned address
+        try:
+            infos = socket.getaddrinfo(host, None)
+            for info in infos:
+                if _is_private_ip(info[4][0]):
+                    return False
+        except socket.gaierror:
+            pass  # resolution failure — allow; will fail at request time
         return True
     except Exception:
         return False
