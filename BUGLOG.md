@@ -1,19 +1,23 @@
 # Bug Log — net-monitor
 
-## 2026-06-25
+## 2026-06-25 — Revisión 1
 
 ### [HIGH] Flag de timeout incorrecto en ping en Windows
-- **Archivo:** `checks.py`
-- **Fix:** En Windows el flag es `-w` (minúscula, milisegundos); en Linux `-W` (mayúscula, segundos). Corregida la construcción del comando.
+- **Fix:** Corregido `-W` → `-w` en Windows.
 
-### [HIGH] Sin validación del host antes de pasarlo a ping/subprocess
-- **Archivo:** `checks.py`
-- **Fix:** Añadida función `_valid_host()` que valida que el host sea una IP válida o un hostname conforme a RFC 1123 antes de pasarlo al subprocess.
+### [HIGH] Sin validación del host antes de pasarlo a subprocess
+- **Fix:** Añadida `_valid_host()`.
 
 ### [HIGH] Endpoints `/control/*` sin autenticación
-- **Archivo:** `web.py`
-- **Fix:** Añadida función `_check_control()` que restringe los endpoints de control a localhost (127.0.0.1/::1) si no hay `CONTROL_TOKEN` configurado, o verifica el token en el cuerpo del formulario si está configurado.
+- **Fix:** Añadida `_check_control()` con token o restricción a localhost.
 
-### [MEDIUM] SSRF: URL en checks HTTP sin validar esquema
-- **Archivo:** `checks.py`
-- **Fix:** Añadida función `_safe_url()` que valida que la URL tenga esquema `http` o `https` y hostname no vacío antes de realizar la petición.
+### [MEDIUM] URL en checks HTTP sin validar esquema
+- **Fix:** Añadida `_safe_url()`.
+
+---
+
+## 2026-06-25 — Revisión 2
+
+### [LOW] CSRF en endpoints `/control/*` via bypass de localhost
+- **Archivo:** `web.py`
+- **Fix:** Eliminado el bypass de localhost. `CONTROL_TOKEN` es ahora obligatorio para los endpoints de control; si no está configurado, devuelve 403.
