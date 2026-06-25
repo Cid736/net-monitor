@@ -122,7 +122,9 @@ All results are stored in `monitor.db` (SQLite). Alerts only fire on **status ch
 
 ## Security
 
-Automated security reviews are powered by [Claude](https://claude.ai) (Anthropic AI) and run on every significant change to detect vulnerabilities, insecure patterns and dependency risks. Findings are tracked in `BUGLOG.md`.
+Automated security reviews are powered by [Claude](https://claude.ai) (Anthropic AI) and run on every significant change to detect vulnerabilities, insecure patterns and dependency risks. Findings are tracked in [`BUGLOG.md`](BUGLOG.md).
+
+**Last review:** 2026-06-25 — 4 issues found (2 high, 1 medium, 1 low) — all patched. Set CONTROL_TOKEN in .env to protect the dashboard.
 
 Found a vulnerability? Open an issue or contact directly.
 
@@ -186,7 +188,9 @@ Los resultados se almacenan en `monitor.db` (SQLite). Las alertas solo se dispar
 
 ## Seguridad
 
-Las revisiones de seguridad automatizadas utilizan [Claude](https://claude.ai) (Anthropic AI) y se ejecutan en cada cambio significativo para detectar vulnerabilidades, patrones inseguros y riesgos en dependencias. Los hallazgos se registran en `BUGLOG.md`.
+Las revisiones de seguridad automatizadas utilizan [Claude](https://claude.ai) (Anthropic AI) y se ejecutan en cada cambio significativo para detectar vulnerabilidades, patrones inseguros y riesgos en dependencias. Los hallazgos se registran en [`BUGLOG.md`](BUGLOG.md).
+
+**Última revisión:** 2026-06-25 — 4 vulnerabilidades encontradas (2 altas, 1 media, 1 baja) — todas parcheadas. Configurar CONTROL_TOKEN en .env para proteger el panel.
 
 ¿Encontraste una vulnerabilidad? Abre un issue o contacta directamente.
 ## Licencia
