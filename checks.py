@@ -27,7 +27,15 @@ def _valid_host(host: str) -> bool:
 def _safe_url(url: str) -> bool:
     try:
         parsed = urlparse(url)
-        return parsed.scheme in ('http', 'https') and bool(parsed.hostname)
+        if parsed.scheme not in ('http', 'https') or not parsed.hostname:
+            return False
+        try:
+            addr = ipaddress.ip_address(parsed.hostname)
+            if addr.is_private or addr.is_loopback or addr.is_link_local or addr.is_reserved:
+                return False
+        except ValueError:
+            pass  # hostname string — allow
+        return True
     except Exception:
         return False
 

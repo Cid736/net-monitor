@@ -7,12 +7,16 @@ from dotenv import load_dotenv
 
 load_dotenv()
 app = Flask(__name__)
+app.secret_key = os.environ.get('FLASK_SECRET_KEY', os.urandom(32))
 CHECK_INTERVAL = 60
 CONTROL_TOKEN = os.environ.get('CONTROL_TOKEN', '')
 
+if not CONTROL_TOKEN:
+    raise RuntimeError("CONTROL_TOKEN must be set in .env before starting net-monitor")
+
 
 def _check_control():
-    if not CONTROL_TOKEN or request.form.get('token') != CONTROL_TOKEN:
+    if request.form.get('token') != CONTROL_TOKEN:
         abort(403)
 
 _stop_event = threading.Event()
@@ -227,8 +231,9 @@ def ctrl_restart():
     return redirect("/")
 
 
-@app.route("/api/status")
+@app.route("/api/status", methods=["POST"])
 def api_status():
+    _check_control()
     return jsonify({"checker": checker_status})
 
 
@@ -243,5 +248,14 @@ if __name__ == "__main__":
 
     start_checker()
     PORT = int(os.environ.get("PORT", 8080))
+    HOST = os.environ.get("HOST", "127.0.0.1")
     print(f"[net-monitor] dashboard -> http://localhost:{PORT}")
-    app.run(host="0.0.0.0", port=PORT)
+
+    @app.after_request
+    def security_headers(r):
+        r.headers['X-Frame-Options'] = 'DENY'
+        r.headers['X-Content-Type-Options'] = 'nosniff'
+        r.headers['Referrer-Policy'] = 'strict-origin-when-cross-origin'
+        return r
+
+    app.run(host=HOST, port=PORT)
