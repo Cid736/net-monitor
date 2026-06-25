@@ -1,4 +1,4 @@
-from flask import Flask, render_template_string, jsonify, redirect
+from flask import Flask, render_template_string, jsonify, redirect, request, abort
 from db import init, get_targets, get_history, uptime_pct, add_target
 from checks import ping, port, http
 from db import record
@@ -8,6 +8,16 @@ from dotenv import load_dotenv
 load_dotenv()
 app = Flask(__name__)
 CHECK_INTERVAL = 60
+_LOCAL_ADDRS = {'127.0.0.1', '::1', '::ffff:127.0.0.1'}
+CONTROL_TOKEN = os.environ.get('CONTROL_TOKEN', '')
+
+
+def _check_control():
+    if CONTROL_TOKEN:
+        if request.form.get('token') != CONTROL_TOKEN:
+            abort(403)
+    elif request.remote_addr not in _LOCAL_ADDRS:
+        abort(403)
 
 _stop_event = threading.Event()
 _checker_thread: threading.Thread | None = None
@@ -198,6 +208,7 @@ def index():
 
 @app.route("/control/start", methods=["POST"])
 def ctrl_start():
+    _check_control()
     global _checker_thread
     if _checker_thread is None or not _checker_thread.is_alive():
         start_checker()
@@ -206,12 +217,14 @@ def ctrl_start():
 
 @app.route("/control/stop", methods=["POST"])
 def ctrl_stop():
+    _check_control()
     stop_checker()
     return redirect("/")
 
 
 @app.route("/control/restart", methods=["POST"])
 def ctrl_restart():
+    _check_control()
     stop_checker()
     time.sleep(0.3)
     start_checker()
