@@ -1,5 +1,8 @@
 import os
+import logging
 import requests
+
+log = logging.getLogger(__name__)
 
 
 def send(msg: str):
@@ -8,13 +11,15 @@ def send(msg: str):
     if not token or not chat:
         return
     try:
-        requests.post(
+        resp = requests.post(
             f"https://api.telegram.org/bot{token}/sendMessage",
             json={"chat_id": chat, "text": msg, "parse_mode": "Markdown"},
             timeout=10,
         )
-    except Exception:
-        pass
+        if not resp.ok:
+            log.warning("[net-monitor] Telegram API error %s: %s", resp.status_code, resp.text[:200])
+    except Exception as exc:
+        log.warning("[net-monitor] Failed to send Telegram alert: %s", exc)
 
 
 def alert_down(name: str, check_type: str, detail: str):

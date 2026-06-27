@@ -75,6 +75,18 @@ def ping(host: str) -> tuple[bool, float]:
 
 
 def port(host: str, p: int) -> tuple[bool, float]:
+    if not _valid_host(host):
+        return False, 0.0
+    if not (1 <= p <= 65535):
+        return False, 0.0
+    # Block connections to private/loopback ranges
+    try:
+        infos = socket.getaddrinfo(host, p)
+        for info in infos:
+            if _is_private_ip(info[4][0]):
+                return False, 0.0
+    except socket.gaierror:
+        pass  # will fail at connect time
     start = time.time()
     try:
         with socket.create_connection((host, p), timeout=TIMEOUT):
@@ -89,7 +101,7 @@ def http(url: str) -> tuple[bool, float, int]:
         return False, 0.0, 0
     start = time.time()
     try:
-        r = requests.get(url, timeout=TIMEOUT, allow_redirects=True)
+        r = requests.get(url, timeout=TIMEOUT, allow_redirects=False)
         ok = r.status_code < 500
         code = r.status_code
     except Exception:

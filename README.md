@@ -122,9 +122,31 @@ All results are stored in `monitor.db` (SQLite). Alerts only fire on **status ch
 
 ## Security
 
-Automated security reviews are powered by [Claude](https://claude.ai) (Anthropic AI) and run on every significant change to detect vulnerabilities, insecure patterns and dependency risks. Findings are tracked in [`BUGLOG.md`](BUGLOG.md).
+Automated security reviews are powered by [Claude](https://claude.ai) (Anthropic AI) and run on every significant change. Findings are tracked in [`BUGLOG.md`](BUGLOG.md).
 
-**Last review:** 2026-06-25 — 4 issues found (2 high, 1 medium, 1 low) — all patched. Set CONTROL_TOKEN in .env to protect the dashboard.
+**Last review:** 2026-06-28 — 5 new issues found (1 high, 2 medium, 2 low) — all patched.
+
+### Model
+
+| Control | Implementation |
+|---|---|
+| Command injection (ping) | `_valid_host()` — strict regex + `ipaddress`; no shell=True |
+| SSRF (HTTP checks) | `_safe_url()` resolves DNS and blocks all RFC-1918/loopback/link-local ranges; redirects disabled (`allow_redirects=False`) |
+| SSRF (TCP port checks) | `_valid_host()` + DNS resolution with private-IP check before `create_connection` |
+| Host validation on add | `cmd_add` calls `_valid_host()` / `_safe_url()` before persisting to DB |
+| SQL injection | All queries use parameterized statements (`?` placeholders) |
+| Dashboard authentication | Session-based login at `/login`; `CONTROL_TOKEN` (required) authenticates the session; `FLASK_SECRET_KEY` signs cookies |
+| Secret management | Credentials via `.env` / environment variables only; `.env` is git-ignored |
+| Security headers | `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` on every response |
+
+### Required `.env` variables
+
+```
+CONTROL_TOKEN=<random 32+ char string>    # protects the web dashboard
+FLASK_SECRET_KEY=<random 32+ char string> # signs Flask session cookies
+TELEGRAM_TOKEN=<bot token>               # optional — alerts won't fire without it
+TELEGRAM_CHAT_ID=<chat id>               # optional
+```
 
 Found a vulnerability? Open an issue or contact directly.
 
@@ -188,9 +210,20 @@ Los resultados se almacenan en `monitor.db` (SQLite). Las alertas solo se dispar
 
 ## Seguridad
 
-Las revisiones de seguridad automatizadas utilizan [Claude](https://claude.ai) (Anthropic AI) y se ejecutan en cada cambio significativo para detectar vulnerabilidades, patrones inseguros y riesgos en dependencias. Los hallazgos se registran en [`BUGLOG.md`](BUGLOG.md).
+Las revisiones de seguridad automatizadas utilizan [Claude](https://claude.ai) (Anthropic AI) y se ejecutan en cada cambio significativo. Los hallazgos se registran en [`BUGLOG.md`](BUGLOG.md).
 
-**Última revisión:** 2026-06-25 — 4 vulnerabilidades encontradas (2 altas, 1 media, 1 baja) — todas parcheadas. Configurar CONTROL_TOKEN en .env para proteger el panel.
+**Última revisión:** 2026-06-28 — 5 nuevas vulnerabilidades encontradas (1 alta, 2 medias, 2 bajas) — todas parcheadas.
+
+| Control | Implementación |
+|---|---|
+| Inyección de comandos (ping) | `_valid_host()` — regex estricta + `ipaddress`; sin `shell=True` |
+| SSRF (checks HTTP) | `_safe_url()` resuelve DNS y bloquea RFC-1918/loopback/link-local; redirects desactivados |
+| SSRF (checks TCP) | `_valid_host()` + resolución DNS con comprobación de IP privada antes de `create_connection` |
+| Validación al añadir objetivo | `cmd_add` llama a `_valid_host()` / `_safe_url()` antes de persistir en la BD |
+| Inyección SQL | Todas las queries usan sentencias parametrizadas (placeholders `?`) |
+| Autenticación del dashboard | Login de sesión en `/login`; `CONTROL_TOKEN` (obligatorio) autentica la sesión; `FLASK_SECRET_KEY` firma las cookies |
+| Gestión de secretos | Credenciales solo via `.env` / variables de entorno; `.env` en `.gitignore` |
+| Cabeceras de seguridad | `X-Frame-Options: DENY`, `X-Content-Type-Options: nosniff`, `Referrer-Policy` en cada respuesta |
 
 ¿Encontraste una vulnerabilidad? Abre un issue o contacta directamente.
 ## Licencia

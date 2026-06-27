@@ -10,7 +10,7 @@ import time
 import sys
 from dotenv import load_dotenv
 from db import init, add_target, get_targets, remove_target, record, get_history, uptime_pct
-from checks import ping, port, http
+from checks import ping, port, http, _valid_host, _safe_url
 from notifier import alert_down, alert_up
 
 load_dotenv()
@@ -70,6 +70,15 @@ def cmd_add(args):
     if args.type == "http" and not args.url:
         print("Error: --url required for type 'http'")
         sys.exit(1)
+    # Validate host/URL before persisting
+    if args.type in ("ping", "port"):
+        if not args.host or not _valid_host(args.host):
+            print(f"Error: invalid or disallowed host '{args.host}'")
+            sys.exit(1)
+    if args.type == "http":
+        if not _safe_url(args.url):
+            print(f"Error: invalid or disallowed URL '{args.url}' (must be http/https to a public host)")
+            sys.exit(1)
     add_target(
         name=args.name,
         check_type=args.type,
